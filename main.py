@@ -10,5 +10,5 @@ async def main(page: ft.Page):
 
 if __name__ == '__main__':
     logger.info("Приложение запущено")
-    ft.app(main)
+    ft.app(main, assets_dir='assets')
     logger.info("Приложение закрыто")

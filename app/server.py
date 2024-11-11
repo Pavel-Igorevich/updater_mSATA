@@ -7,9 +7,14 @@ from io import BytesIO
 
 
 class ServerConnection:
+    dict_auth = [
+        {"username": "root", "password": "toor"},
+        {"username": "tts", "password": "tts"}
+    ]
+
     def __init__(self, serial_number, file):
-        self.user = 'root'
-        self.password = 'toor'
+        self.user = None
+        self.password = None
         self.port = 22
         self.serial_number = int(serial_number)
         self.ip = None
@@ -32,6 +37,24 @@ class ServerConnection:
         else:
             self.logger.error(f'Не корректный номер сервера, {self.serial_number}')
             self.result = 'Не корректный номер сервера'
+            return False
+
+    def connection(self):
+        for params_auth in self.dict_auth:
+            self.user = params_auth['username']
+            self.password = params_auth['password']
+            error, _ = self.ssh('')
+            if error:
+                self.logger.warning(f'Подключение к серверу с параметрами входа под ОС '
+                                    f'{"Porteus" if self.user == "root" else "AVREG"} - Не удалось')
+                self.user = None
+                self.password = None
+            else:
+                self.logger.info(f'Подключение к серверу с параметрами входа под ОС '
+                                 f'{"Porteus" if self.user == "root" else "AVREG"} - удалось')
+                return True
+        if self.user is None:
+            self.result = f"Сервер № {self.serial_number} - не отвечает"
             return False
 
     def ssh(self, command, timeout=3):
@@ -164,14 +187,13 @@ class ServerConnection:
         self.result = "Проверка обновленной версии ПО не удалась"
         return False
 
-    def old_act(self, result_queue):
+    def act(self, result_queue):
         self.settings()
         if not self.create_ip_server():
             result_queue.put({'Error': self.result})
             return
-        error, _ = self.ssh('')
-        if error:
-            result_queue.put({'Error': f"Сервер № {self.serial_number} - не отвечает"})
+        if not self.connection():
+            result_queue.put({'Error': self.result})
             return
         if not self.search_devices():
             result_queue.put({'Error': self.result})
@@ -182,7 +204,6 @@ class ServerConnection:
         elif self.result:
             result_queue.put({'Success': self.result})
             return
-
         if not self.upload_bytes_to_server():
             result_queue.put({'Error': self.result})
             return
@@ -192,7 +213,3 @@ class ServerConnection:
             result_queue.put({'Success': self.result})
         else:
             result_queue.put({'Error': self.result})
-
-    def act(self, result_queue):
-        time.sleep(3)
-        return result_queue.put({'Error': f"Сервер № {self.serial_number} - не отвечает"})
