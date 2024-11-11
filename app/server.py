@@ -108,7 +108,9 @@ class ServerConnection:
             return None, None
 
     def upload_bytes_to_server(self):
-        self.ssh('mkdir -p /mnt/video')
+        self.logger.info("Проверка создания папки /mnt/video")
+        result = self.ssh('mkdir -p /mnt/video')
+        self.logger.info(f"/mnt/video - result: {result}")
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
