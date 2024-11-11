@@ -55,7 +55,7 @@ def setup_logging():
 
     main_logger = logging.getLogger("app_logger")
     main_logger.setLevel(logging.INFO)
-    file_handler = logging.FileHandler(log_filename, mode='a')
+    file_handler = logging.FileHandler(log_filename, mode='a', encoding='utf-8')
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     file_handler.setFormatter(formatter)
     main_logger.addHandler(file_handler)

@@ -9,8 +9,8 @@ from io import BytesIO
 class ServerConnection:
     def __init__(self, serial_number, file):
         self.user = 'root'
-        self.password = 'password'
-        self.port = 2222
+        self.password = 'toor'
+        self.port = 22
         self.serial_number = int(serial_number)
         self.ip = None
         self.client = None
@@ -18,7 +18,7 @@ class ServerConnection:
         self.result = None
         self.device = None
         self.all_devices = None
-        self.fw_path = '/home/L23B03.bin'
+        self.fw_path = '/mnt/video/L23B03.bin'
         self.logger = utils.logger
 
     def settings(self):
@@ -108,6 +108,7 @@ class ServerConnection:
             return None, None
 
     def upload_bytes_to_server(self):
+        self.ssh('mkdir -p /mnt/video')
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

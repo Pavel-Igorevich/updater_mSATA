@@ -87,7 +87,7 @@ class MainWindow:
 
     async def check_params(self) -> bool:
         await self.check_server_num()
-        if ip_check():
+        if not ip_check():
             self.snack_bar_text.value = "Ваше устройство не настроено на работу в подсети 10.8.X.X"
             self.page.snack_bar.open = True
             await self.unblock_start_btn()
@@ -188,8 +188,8 @@ class MainWindow:
         self.page.title = 'Программа обновление mSATA'
         self.page.theme_mode = ft.ThemeMode.LIGHT
         self.page.overlay.append(self.file_picker)
-        self.page.window_min_width = self.page.window_width = 400
-        self.page.window_min_height = self.page.window_height = 200
+        self.page.window_min_width = self.page.window_width = self.page.window_max_width = 400
+        self.page.window_min_height = self.page.window_height = self.page.window_max_height = 200
         self.page.snack_bar = ft.SnackBar(
             content=self.snackbar_content,
             bgcolor=ft.colors.RED_ACCENT,

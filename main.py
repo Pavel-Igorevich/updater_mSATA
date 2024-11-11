@@ -4,10 +4,11 @@ from app.utils import logger
 
 
 async def main(page: ft.Page):
-    logger.info("Приложение запущено")
     app = gui.MainWindow(page)
     await app.run()
-    logger.info("Приложение закрыто")
+
 
 if __name__ == '__main__':
+    logger.info("Приложение запущено")
     ft.app(main)
+    logger.info("Приложение закрыто")
